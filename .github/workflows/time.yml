@@ -1,29 +1,35 @@
-name: Daily Scraper
+name: Daily Scraping Job
 
 on:
   schedule:
-    - cron: '30 10 * * *'
-  workflow_dispatch: 
+    # Runs at 4:00 PM UTC every day
+    - cron: '0 16 * * *'
+  workflow_dispatch: # Allows manual triggering
 
 jobs:
-  run-scraper:
+  scrape:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
       - name: Install dependencies
-        run: npm install
+        run: npm install puppeteer
 
-      - name: Run Puppeteer Script
-        run: node scripts/scrape.js
+      - name: Run scraping script
+        run: node scrape.js
+        env:
+          NODE_OPTIONS: --unhandled-rejections=strict # Ensure unhandled rejections fail the job
 
-      - name: Upload scraped output (optional)
-        if: success()
-        run: echo "Add output logic if needed"
+      - name: Archive results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: scraping-results
+          path: |
+            scrape.js
+            # Add any output files if your script saves results
