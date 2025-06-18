@@ -1,0 +1,29 @@
+name: Daily Scraper
+
+on:
+  schedule:
+    - cron: '30 10 * * *'
+  workflow_dispatch: 
+
+jobs:
+  run-scraper:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Puppeteer Script
+        run: node scripts/scrape.js
+
+      - name: Upload scraped output (optional)
+        if: success()
+        run: echo "Add output logic if needed"
