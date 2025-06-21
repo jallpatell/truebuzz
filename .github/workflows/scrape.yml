@@ -2,7 +2,7 @@ name: Daily Sahi Buzz Scraper
 
 on:
   schedule:
-    - cron: '0 16 * * *'  # 4:00 PM UTC daily
+    - cron: '*/1 * * * *'  # 4:00 PM UTC daily
   workflow_dispatch:
 
 jobs:
