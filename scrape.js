@@ -1,6 +1,11 @@
 const puppeteer = require('puppeteer-core');
 const fs = require('fs');
 
+const browser = await puppeteer.launch({
+  headless: "new",
+  args: ['--no-sandbox', '--disable-setuid-sandbox']
+});
+
 async function scrapeWithBrowser() {
   const browser = await puppeteer.launch({
     headless: "new",
