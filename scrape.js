@@ -1,6 +1,7 @@
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 const fs = require('fs');
 
+<<<<<<< HEAD
 async function scrapeWithBrowser() {
   // Enhanced launch configuration for CI environments
   const launchOptions = {
@@ -18,15 +19,31 @@ async function scrapeWithBrowser() {
     ignoreHTTPSErrors: true,
     executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined
   };
+=======
+const browser = await puppeteer.launch({
+  headless: "new",
+  args: ['--no-sandbox', '--disable-setuid-sandbox']
+});
+>>>>>>> 4def1d65d9b2857deead7f00cc2e109c5144cdfb
 
-  console.log('Launching browser with options:', launchOptions);
-  const browser = await puppeteer.launch(launchOptions);
+async function scrapeWithBrowser() {
+  const browser = await puppeteer.launch({
+    headless: "new",
+    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/google-chrome',
+    args: [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage',
+    '--disable-accelerated-2d-canvas',
+    '--no-first-run',
+    '--no-zygote',
+    '--single-process', // This can help in some environments
+    '--disable-gpu'
+    ]
+  });
 
   try {
     const page = await browser.newPage();
-    
-    // Set realistic viewport and user agent
-    await page.setViewport({ width: 1280, height: 800 });
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
     
     console.log('Navigating to page...');
@@ -35,7 +52,7 @@ async function scrapeWithBrowser() {
       timeout: 60000
     });
 
-    console.log('Waiting for content to load...');
+    console.log('Waiting for content...');
     await page.waitForSelector('[class*="text-lg"]', { timeout: 30000 });
 
     const articles = await page.evaluate(() => {
@@ -48,30 +65,28 @@ async function scrapeWithBrowser() {
       }));
     });
 
+    fs.writeFileSync('output.json', JSON.stringify({ data: articles }, null, 2));
     console.log(`Successfully scraped ${articles.length} articles`);
-    fs.writeFileSync('output.json', JSON.stringify({ success: true, data: articles }, null, 2));
     return articles;
 
   } catch (error) {
     console.error('Scraping failed:', error);
     fs.writeFileSync('output.json', JSON.stringify({ 
-      success: false, 
       error: error.message,
       stack: error.stack 
     }, null, 2));
     return [];
   } finally {
-    await browser.close().catch(e => console.error('Browser close error:', e));
+    await browser.close().catch(e => console.error('Error closing browser:', e));
   }
 }
 
-// Handle process exit properly
 (async () => {
   try {
     await scrapeWithBrowser();
     process.exit(0);
   } catch (error) {
-    console.error('Top-level error:', error);
+    console.error('Fatal error:', error);
     process.exit(1);
   }
 })();
