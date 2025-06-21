@@ -6,13 +6,14 @@ async function scrapeWithBrowser() {
   const launchOptions = {
     headless: "new",
     args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-accelerated-2d-canvas',
-      '--disable-gpu',
-      '--single-process',
-      '--no-zygote'
+       '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage',
+    '--disable-accelerated-2d-canvas',
+    '--no-first-run',
+    '--no-zygote',
+    '--single-process', // This can help in some environments
+    '--disable-gpu'
     ],
     ignoreHTTPSErrors: true,
     executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined
