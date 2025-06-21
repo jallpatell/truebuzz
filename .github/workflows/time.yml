@@ -21,7 +21,7 @@ jobs:
         run: npm install puppeteer
 
       - name: Run scraping script
-        run: node scrape.js
+        run: node scrap.js
         env:
           NODE_OPTIONS: --unhandled-rejections=strict # Ensure unhandled rejections fail the job
 
