@@ -1,51 +1,26 @@
 const puppeteer = require('puppeteer-core');
 const fs = require('fs');
 
-<<<<<<< HEAD
-async function scrapeWithBrowser() {
-  // Enhanced launch configuration for CI environments
-  const launchOptions = {
-    headless: "new",
-    args: [
-       '--no-sandbox',
-    '--disable-setuid-sandbox',
-    '--disable-dev-shm-usage',
-    '--disable-accelerated-2d-canvas',
-    '--no-first-run',
-    '--no-zygote',
-    '--single-process', // This can help in some environments
-    '--disable-gpu'
-    ],
-    ignoreHTTPSErrors: true,
-    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined
-  };
-=======
-const browser = await puppeteer.launch({
-  headless: "new",
-  args: ['--no-sandbox', '--disable-setuid-sandbox']
-});
->>>>>>> 4def1d65d9b2857deead7f00cc2e109c5144cdfb
-
 async function scrapeWithBrowser() {
   const browser = await puppeteer.launch({
     headless: "new",
     executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/google-chrome',
     args: [
-    '--no-sandbox',
-    '--disable-setuid-sandbox',
-    '--disable-dev-shm-usage',
-    '--disable-accelerated-2d-canvas',
-    '--no-first-run',
-    '--no-zygote',
-    '--single-process', // This can help in some environments
-    '--disable-gpu'
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-accelerated-2d-canvas',
+      '--no-first-run',
+      '--no-zygote',
+      '--single-process',
+      '--disable-gpu'
     ]
   });
 
   try {
     const page = await browser.newPage();
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
-    
+
     console.log('Navigating to page...');
     await page.goto('https://sahi.com/sahi-buzz?date=Today', {
       waitUntil: 'networkidle2',
@@ -71,9 +46,9 @@ async function scrapeWithBrowser() {
 
   } catch (error) {
     console.error('Scraping failed:', error);
-    fs.writeFileSync('output.json', JSON.stringify({ 
+    fs.writeFileSync('output.json', JSON.stringify({
       error: error.message,
-      stack: error.stack 
+      stack: error.stack
     }, null, 2));
     return [];
   } finally {
