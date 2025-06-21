@@ -1,4 +1,4 @@
-name: Daily Sahi Buzz Scraper
+name: Sahi Buzz Scraper
 
 on:
   schedule:
